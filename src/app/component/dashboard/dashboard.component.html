@@ -1,0 +1,45 @@
+
+  <div fxLayout="row" fxLayoutGap="16px" class="dashboard">
+    <div fxFlex="20">
+      <div fxLayout="column" fxLayoutGap="16px" class="total">
+        <div fxFlex="20" class="total confirmed">
+          <div class="title">Total Confirmed</div>
+          <div>{{totalConfirmed}}</div>
+        </div>
+        <div fxFlex="80">Confirmed case by Country/Region</div>
+      </div>
+    </div>
+    <div fxFlex="60">
+      <div fxLayout="column" class="visual">
+        <div fxFlex="80" class="map" id="map-id"></div>
+        <div fxFlex="20" class="chart">
+          <canvas baseChart
+                  [datasets]="lineChartData"
+                  [labels]="lineChartLabels"
+                  [options]="lineChartOptions"
+                  [colors]="lineChartColors"
+                  [chartType]="lineChartType"
+                  [plugins]="lineChartPlugins">
+          </canvas>
+        </div>
+      </div>
+    </div>
+    <div fxFlex="20">
+      <div fxLayout="column" class="more-info">
+        <div fxFlex="80" class="dead-recovered">
+          <div fxLayout="row" fxLayoutGap="16px">
+            <div fxFlex="50">
+              <div>Total Dead</div>
+              <div>{{totalDeaths}}</div>
+            </div>
+            <div fxFlex="50">
+              <div>Total Recovered</div>
+              <div>{{totalRecovered}}</div>
+            </div>
+          </div>
+        </div>
+        <div fxFlex="20" class="update-info">Info</div>
+      </div>
+    </div>
+
+  </div>

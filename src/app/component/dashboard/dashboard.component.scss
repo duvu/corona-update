@@ -1,0 +1,38 @@
+.dashboard {
+  height: 100%;
+  opacity: 0.5;
+
+  .total {
+    height: 100%;
+    .confirmed {
+      height: 20%;
+
+      div {
+        font-size: 36px;
+      }
+    }
+    .details {
+      height: 80%;
+    }
+  }
+
+  .visual {
+    height: 100%;
+    .map {
+      height: 80%;
+    }
+    .chart {
+      height: 20%;
+    }
+  }
+
+  .more-info {
+    height: 100%;
+    .dead-recovered {
+      height: 80%;
+    }
+    .update-info {
+      height: 20%;
+    }
+  }
+}
