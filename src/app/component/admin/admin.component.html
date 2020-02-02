@@ -1,5 +1,6 @@
 <mat-toolbar>
   <button mat-flat-button (click)="signOut()">Logout</button>
+
 </mat-toolbar>
 
 <div fxLayout="column" fxLayoutGap="16px">
@@ -33,6 +34,7 @@
 
   <div fxFlex>
     <button mat-flat-button color="primary" (click)="submit()">Submit</button>
+    <input type="file" id="file" (change)="incoming_file($event.target.files)" placeholder="Choose a file" accept=".xlsx">
   </div>
 
   <mat-divider></mat-divider>

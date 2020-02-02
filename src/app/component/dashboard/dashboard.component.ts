@@ -51,12 +51,28 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
   public lineChartPlugins = [];
 
   private itemsCollection: AngularFirestoreCollection<Item>;
+  private itemsCollection2: AngularFirestoreCollection<Item>;
   private items: Observable<Item[]>;
+  private items2: Observable<any[]>;
+
   totalConfirmed: number;
   totalRecovered: number;
   totalDeaths: number;
-  constructor(db: AngularFirestore, adb: AngularFireDatabase) {
-    this.itemsCollection = db.collection<Item>('items');
+  constructor(private readonly afs: AngularFirestore) {
+    this.itemsCollection2 = afs.collection('label');
+    this.itemsCollection2.snapshotChanges().pipe(
+      map(actions => {
+      return actions.map(a => {
+        const id = a.payload.doc.id;
+        return id;
+      });
+    })).subscribe(data => {
+      if (data && data.length > 0) {
+        this.process(data);
+      }
+    });
+    // --
+    this.itemsCollection = afs.collection<Item>('items');
     this.items = this.itemsCollection.valueChanges()
       .pipe(
         startWith([]),
@@ -89,9 +105,9 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
           }
         ];
 
-        this.totalConfirmed = (data && data[data.length - 1]) ?  data[data.length - 1].confirmed : 0;
-        this.totalDeaths = (data && data[data.length - 1]) ?  data[data.length - 1].deaths : 0;
-        this.totalRecovered = (data && data[data.length - 1]) ?  data[data.length - 1].recovered : 0;
+        // this.totalConfirmed = (data && data[data.length - 1]) ?  data[data.length - 1].confirmed : 0;
+        // this.totalDeaths = (data && data[data.length - 1]) ?  data[data.length - 1].deaths : 0;
+        // this.totalRecovered = (data && data[data.length - 1]) ?  data[data.length - 1].recovered : 0;
       }
     );
   }
@@ -119,4 +135,34 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
   }
+
+  private process(data: string[]) {
+    this.processLatestData(data[data.length - 1]);
+    _.forEach(data, (x) => {
+      this.afs.collection('data').doc(x).collection(x).valueChanges().subscribe(data1 => {
+        // console.log(x, data1.length);
+      });
+    });
+  }
+
+  private processLatestData(x: string) {
+    this.totalConfirmed = 0;
+    this.totalRecovered = 0;
+    this.totalDeaths = 0;
+    this.afs.collection('data').doc(x).collection(x).valueChanges().subscribe(data1 => {
+      _.forEach(data1, (data) => {
+        this.totalConfirmed += data.Confirmed; // ['Confirmed'];
+        this.totalRecovered += data.Recovered ? data.Recovered : 0;
+        this.totalDeaths += data.Deaths ? data.Deaths : 0;
+      });
+    });
+  }
+
+  // private getTotalConfirmedByX(data: any[]): number {
+  //   let confirmed = 0;
+  //   _.forEach(data, (d) => {
+  //     confirmed += d.Confirmed; // ['Confirmed'];
+  //   });
+  //   return confirmed;
+  // }
 }
